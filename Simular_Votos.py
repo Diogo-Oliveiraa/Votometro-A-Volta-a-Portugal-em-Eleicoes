@@ -1,6 +1,7 @@
 import random
 import json
 import os
+import pandas as pd
 
 def simular_votos(total_votos, partidos,pesos_partidos):
 
@@ -35,9 +36,9 @@ def resultado_votos(distritos_concelhos, partidos, pesos_partidos):
             "Distrito": distrito,
             "Concelho": concelho,
             "Inscritos": populacao,
-            "Votos Validos": votos_validos,
-            "Votos Nulos": votos_nulos,
-            "Votos Brancos": votos_brancos,
+            "VV": votos_validos,
+            "VN": votos_nulos,
+            "VB": votos_brancos,
             "Abstencao": abstencao,
         }
 
@@ -49,5 +50,11 @@ def resultado_votos(distritos_concelhos, partidos, pesos_partidos):
 
         with open(caminho, "w", encoding="utf-8") as f:
             json.dump(resultado, f, indent=2, ensure_ascii=False)
+
+
+        filename_excel = f"{distrito}_{concelho}.xlsx"
+        caminho_excel = os.path.join("./ResultadoEleicoesDistritos", filename_excel)
+        df_resultado = pd.DataFrame([resultado])
+        df_resultado.to_excel(caminho_excel, index=False)
 
     return resultadoscsv

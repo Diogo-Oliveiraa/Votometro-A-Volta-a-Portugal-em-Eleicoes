@@ -22,16 +22,18 @@ if os.path.exists(resultados_excel):
     concelhos = df_resultados[df_resultados["Distrito"] == distrito_sel]["Concelho"].unique()
     concelho_sel = st.selectbox("Seleciona o Concelho", concelhos)
 
-    filename = f"{distrito_sel}_{concelho_sel}.json"
+    filename = f"{distrito_sel}_{concelho_sel}.xlsx"
     caminho = os.path.join(resultados_dir, filename)
 
     if os.path.exists(caminho):
-        with open(caminho, "r", encoding="utf-8") as f:
-            resultado = json.load(f)
+
+        df_resultados = pd.read_excel(caminho)
         st.subheader(f"Resultados para {concelho_sel} ({distrito_sel})")
-        st.json(resultado)
+        st.dataframe(df_resultados)
+
     else:
-        st.warning("Ficheiro JSON do concelho não encontrado.")
+
+        st.warning("Ficheiro excel do concelho não encontrado.")
 
 else:
     st.error("Ficheiro de resultados não encontrado. Por favor, corre primeiro o script de simulação.")
