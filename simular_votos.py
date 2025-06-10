@@ -1,7 +1,7 @@
 """Biblioteca para dados random / guardar em ficheiro JSON / localizao do OS"""
 import random
-import json
 import os
+import json
 import pandas as pd
 
 def simular_votos(total_votos, partidos):
@@ -18,8 +18,10 @@ def criar_pastas():
     try:
         os.makedirs("./ResultadoEleicoesDistritos/JSON", exist_ok=True)
         os.makedirs("./ResultadoEleicoesDistritos/XLSX", exist_ok=True)
-    except OSError as erro:
-        print(f"Pastas não criadas! {erro}")
+        return True
+    except OSError as e:
+        print(f"Pastas não criadas! {e}")
+        return False
 
 def resultado_votos(distritos_concelhos, partidos):
     """ Função para guardar os votos por concelho em ficheiro JSON e Excel """
@@ -56,18 +58,25 @@ def resultado_votos(distritos_concelhos, partidos):
 
         print(f"Votos efetuados {distrito}_{concelho}")
 
-def main():
+    print("Votos concluidos!")
+
+def lerdocs():
     """Verificação dos ficheiros e inicio da simulação"""
     try:
         df_partidos = pd.read_excel("./Docs/partidos.xlsx")
         distritos_concelhos = pd.read_excel("./Docs/Distritos_Concelhos.xlsx")
     except FileNotFoundError as erro:
         print(f"Ficheiros não encontrados : {erro}")
-        return
+        return False
 
     partidos = df_partidos["Partidos"].tolist()
     resultado_votos(distritos_concelhos, partidos)
-    print("Votos concluidos!")
+    return None
+
+
+def main():
+    """Função principal"""
+    lerdocs()
 
 if __name__ == "__main__":
     main()
