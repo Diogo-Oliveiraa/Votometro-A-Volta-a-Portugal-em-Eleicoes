@@ -6,18 +6,22 @@ import pandas as pd
 
 def simular_votos(total_votos, partidos):
     """ Função para simular uma distribuição aleatoria dos votos"""
-    distribuicao = {p: 0 for p in partidos}
     votos_simulados = random.choices(partidos, k=total_votos)
+    return {p: votos_simulados.count(p) for p in partidos}
 
-    for partido in votos_simulados:
-        distribuicao[partido] += 1
 
-    return distribuicao
+def criar_pastas():
+    """ Criação das pastas para guardar os ficheiros"""
+    try:
+        os.makedirs("./ResultadoEleicoesDistritos/JSON", exist_ok=True)
+        os.makedirs("./ResultadoEleicoesDistritos/XLSX", exist_ok=True)
+    except OSError as erro:
+        print(f"Pastas não criadas! {erro}")
+        return
 
 def resultado_votos(distritos_concelhos, partidos):
     """ Função para guardar os votos por concelho em ficheiro JSON e Excel """
-    os.makedirs("./ResultadoEleicoesDistritos/JSON", exist_ok=True)
-    os.makedirs("./ResultadoEleicoesDistritos/XLSX", exist_ok=True)
+    criar_pastas()
 
     for _, row in distritos_concelhos.iterrows():
         distrito = row["Distrito"]
@@ -39,8 +43,8 @@ def resultado_votos(distritos_concelhos, partidos):
         filename = f"{concelho}.json"
         caminho = os.path.join("./ResultadoEleicoesDistritos/JSON", filename)
 
-        with open(caminho, "w", encoding="utf-8") as file:
-            json.dump(resultado, file, indent=2, ensure_ascii=False)
+        with open(caminho, "w", encoding="utf-8") as jsonfile:
+            json.dump(resultado, jsonfile, indent=2, ensure_ascii=False)
 
         """ Cria um ficheiro excel com as votações dos partidos"""
         filename_excel = f"{distrito}_{concelho}.xlsx"
@@ -48,14 +52,20 @@ def resultado_votos(distritos_concelhos, partidos):
         df_resultado = pd.DataFrame([resultado])
         df_resultado.to_excel(caminho_excel, index=False)
 
+        print(f"Votos efetuados {distrito}_{concelho}")
 
 def main():
-    """Simulação a partir dos ficheiros de entrada"""
-    df_partidos = pd.read_excel("./Docs/partidos.xlsx")
-    partidos = df_partidos["Partidos"].tolist()
-    distritos_concelhos = pd.read_excel("./Docs/Distritos_Concelhos.xlsx")
-    resultado_votos(distritos_concelhos, partidos)
+    """Verificação dos ficheiros e inicio da simulação"""
+    try:
+        df_partidos = pd.read_excel("./Docs/partidos.xlsx")
+        distritos_concelhos = pd.read_excel("./Docs/Distritos_Concelhos.xlsx")
+    except FileNotFoundError as erro:
+        print(f"Ficheiros não encontrados : {erro}")
+        return
 
+    partidos = df_partidos["Partidos"].tolist()
+    resultado_votos(distritos_concelhos, partidos)
+    print("Votos concluidos!")
 
 if __name__ == "__main__":
     main()
