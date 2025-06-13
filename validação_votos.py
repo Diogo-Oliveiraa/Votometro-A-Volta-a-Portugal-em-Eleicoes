@@ -1,17 +1,41 @@
+"""Localizao do ficheiros no OS / Manipulação e análise de dados"""
 import os
 import pandas as pd
 
-# Caminhos
-CAMINHO_CONCELHOS = "./Docs/Distritos_Concelhos.xlsx"
-CAMINHO_RESULTADOS = "./ResultadoEleicoesDistritos/XLSX"
-CAMINHO_SAIDA = "./ResultadosFinais/VotosValidados.xlsx"
+def ler_docs():
+    """Verificação dos ficheiros dos Concelhos e Resultados"""
+    caminho_concelhos = "./Docs/Distritos_Concelhos.xlsx"
+    caminho_resultados = "./ResultadoEleicoesDistritos/XLSX"
+    erros = []
+
+    if not os.path.isfile(caminho_concelhos):
+        erros.append(f"Ficheiro não encontrado: {caminho_concelhos}")
+
+    if not os.path.isdir(caminho_resultados):
+        erros.append(f"Pasta não encontrada: {caminho_resultados}")
+
+    if erros:
+        for erro in erros:
+            print(erro)
+        return False
+
+    return caminho_concelhos, caminho_resultados
+
+def criar_pasta():
+    """ Criação da pasta ResultadosFinais para guardar o XLSX"""
+    try:
+        os.makedirs("./ResultadosFinais/", exist_ok=True)
+        return True
+    except OSError as e:
+        print(f"Pasta não criada! {e}")
+        return False
 
 def ficheiros_por_nome_base(ficheiros, nome_base):
     """Filtra ficheiros que contenham o nome base (exato) no início do nome"""
     return [f for f in ficheiros if f.startswith(nome_base) and f.endswith(".xlsx")]
 
-def validar_ficheiros(distritos_concelhos):
-    ficheiros = os.listdir(CAMINHO_RESULTADOS)
+def validar_ficheiros(distritos_concelhos, caminho_resultados):
+    ficheiros = os.listdir(caminho_resultados)
     resultados_validados = []
     erros = []
 
@@ -27,33 +51,71 @@ def validar_ficheiros(distritos_concelhos):
         elif len(ficheiros_encontrados) > 1:
             erros.append(f"❌ Vários ficheiros encontrados para: {nome_base} -> {ficheiros_encontrados}")
         else:
-            caminho_ficheiro = os.path.join(CAMINHO_RESULTADOS, ficheiros_encontrados[0])
+            caminho_ficheiro = os.path.join(caminho_resultados, ficheiros_encontrados[0])
             df = pd.read_excel(caminho_ficheiro)
+            calcular_abstencao(df)
             resultados_validados.append(df)
 
     return resultados_validados, erros
 
 def guardar_resultado_final(resultados_validados):
-    """Guarda todos os resultados num único ficheiro Excel"""
+    """Soma todos os resultados dos Partidos e guarda num único ficheiro Excel"""
+    criar_pasta()
+    caminho_saida = "./ResultadosFinais/VotosValidados.xlsx"
+
+    # Junta todos os DataFrames
     df_final = pd.concat(resultados_validados, ignore_index=True)
-    df_final.to_excel(CAMINHO_SAIDA, index=False)
-    print(f"Ficheiro final guardado em: {CAMINHO_SAIDA}")
+
+    df_para_soma = df_final.iloc[:-2]
+
+    colunas = list(df_final.columns)
+    idx_inscritos = colunas.index("Inscritos")
+    idx_abstencao = colunas.index("Abtenção")
+
+    colunas_partidos = df_final.iloc[:, idx_inscritos:idx_abstencao+1].columns
+
+    totais_por_partido = df_para_soma[colunas_partidos].sum()
+
+    nova_linha = {col: "" for col in df_final.columns}
+    nova_linha["Distrito"] = "TOTAL PORTUGAL"
+    nova_linha["Concelho"] = "TOTAL PORTUGAL"
+    for col in colunas_partidos:
+        nova_linha[col] = totais_por_partido[col]
+
+    df_final = pd.concat([df_final, pd.DataFrame([nova_linha], columns=df_final.columns)], ignore_index=True)
+
+    df_final.to_excel(caminho_saida, index=False)
+    print(f"Ficheiro final guardado em: {caminho_saida}")
+
+
+def calcular_abstencao(df):
+    """Calcula abstenção por concelho/distrito"""
+    colunas = list(df.columns)
+
+    idx_adn = colunas.index("ADN")
+    idx_brancos = colunas.index("Brancos")
+
+    colunas_para_somar = colunas[idx_adn:idx_brancos + 1]
+    total_votos = df[colunas_para_somar].sum(axis=1)
+
+    df["Abtenção"] = df["Inscritos"] - total_votos
 
 def main():
-    distritos_concelhos = pd.read_excel(CAMINHO_CONCELHOS)
-    resultados_validados, erros = validar_ficheiros(distritos_concelhos)
+    """ Executa a leitura dos ficheiros, caso seja TRUE executa o resto do programa"""
+    leitura_docs = ler_docs()
 
-    if erros:
-        print("Erros encontrados durante a validação:")
-        for erro in erros:
-            print(erro)
-    else:
-        print("Todos os ficheiros foram validados com sucesso.")
+    if leitura_docs:
+            caminho_concelhos, caminho_resultados = ler_docs()
+            distritos_concelhos = pd.read_excel(caminho_concelhos)
+            resultados_validados, documentos_erros = validar_ficheiros(distritos_concelhos, caminho_resultados)
 
-    if resultados_validados:
-        guardar_resultado_final(resultados_validados)
-    else:
-        print("Nenhum resultado foi validado com sucesso.")
+            if documentos_erros:
+                print("Erros encontrados durante a validação:")
+                for erro in documentos_erros:
+                    print(erro)
+            else:
+                print("Todos os ficheiros foram validados com sucesso.")
+                guardar_resultado_final(resultados_validados)
 
 if __name__ == "__main__":
     main()
