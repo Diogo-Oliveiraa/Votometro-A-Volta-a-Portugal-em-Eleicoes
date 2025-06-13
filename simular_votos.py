@@ -3,6 +3,8 @@ import random
 import os
 import json
 import pandas as pd
+from charset_normalizer.md import mess_ratio
+
 
 def simular_votos(total_votos, partidos):
     """ Função para simular uma distribuição aleatoria dos votos"""
@@ -12,6 +14,28 @@ def simular_votos(total_votos, partidos):
     for partido in votos_simulados:
         distribuicao[partido] += 1
     return distribuicao
+
+def verificar_dados_existentes(caminho_excel, total_esperado=310):
+    """ Verificar se já existe dados nas pastas"""
+    if os.path.exists(caminho_excel):
+        ficheiros = [f for f in os.listdir(caminho_excel) if f.endswith(".xlsx")]
+        total_pasta = len(ficheiros)
+
+        if total_esperado > 0:
+            mensagem = input(
+                f"A pasta contém {total_pasta} ficheiros .xlsx "
+                    f"(esperado: {total_esperado}).\n"
+                    "Deseja continuar e sobrescrever os ficheiros existentes? (s/n): ").strip().lower()
+
+            if mensagem == 's':
+                for ficheiro in ficheiros:
+                    os.remove(os.path.join(caminho_excel, ficheiro))
+                print("Ficheiros eliminados")
+                return True
+            else:
+                return False
+    return True
+
 
 def criar_pastas():
     """ Criação das pastas para guardar os ficheiros"""
@@ -41,7 +65,7 @@ def resultado_votos(distritos_concelhos, partidos):
         }
 
         resultado.update(votos)
-        resultado.pop("NaoVotantes",None)
+        resultado.pop("Abstencao",None)
 
         #Cria um ficheiro JSON com as votações dos partidos
         filename = f"{concelho}.json"
@@ -76,6 +100,12 @@ def lerdocs():
 
 def main():
     """Função principal"""
+    caminho_excel = "./ResultadoEleicoesDistritos/XLSX"
+
+    if not verificar_dados_existentes(caminho_excel):
+        print("Operação cancelada!.")
+        return
+
     lerdocs()
 
 if __name__ == "__main__":
