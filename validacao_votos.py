@@ -59,31 +59,10 @@ def validar_ficheiros(distritos_concelhos, caminho_resultados):
     return resultados_validados, erros
 
 def guardar_resultado_final(resultados_validados):
-    """Soma todos os resultados dos Partidos e guarda num único ficheiro Excel"""
+    """Guarda num único ficheiro Excel """
     criar_pasta()
     caminho_saida = "./ResultadosFinais/VotosValidados.xlsx"
-
-    # Junta todos os DataFrames
     df_final = pd.concat(resultados_validados, ignore_index=True)
-
-    df_para_soma = df_final.iloc[:-2]
-
-    colunas = list(df_final.columns)
-    idx_inscritos = colunas.index("Inscritos")
-    idx_abstencao = colunas.index("Abtenção")
-
-    colunas_partidos = df_final.iloc[:, idx_inscritos:idx_abstencao+1].columns
-
-    totais_por_partido = df_para_soma[colunas_partidos].sum()
-
-    nova_linha = {col: "" for col in df_final.columns}
-    nova_linha["Distrito"] = "TOTAL PORTUGAL"
-    nova_linha["Concelho"] = "TOTAL PORTUGAL"
-    for col in colunas_partidos:
-        nova_linha[col] = totais_por_partido[col]
-
-    df_final = pd.concat([df_final, pd.DataFrame([nova_linha], columns=df_final.columns)], ignore_index=True)
-
     df_final.to_excel(caminho_saida, index=False)
     print(f"Ficheiro final guardado em: {caminho_saida}")
 
