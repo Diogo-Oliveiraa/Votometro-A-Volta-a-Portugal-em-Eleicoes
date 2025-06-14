@@ -64,6 +64,8 @@ A estrutura do projeto é a seguinte:
 - **Docs/**: Pasta com ficheiros de configuração (partidos, distritos, concelhos).
 - **ResultadoEleicoesDistritos/**: Pasta onde são guardados os resultados por concelho e distrito (Excel, JSON).
 - **ResultadosFinais/**: Pasta para os ficheiros finais agregados e prontos para visualização.
+- **relatorio_pylint.txt**, **relatorio_coverage.txt**:  Relatorio dos testes de Pylint e do Coverage
+- **htmlcov**: Pasta do report do coverage em html   
 
 A existência dos ficheiros `README.md` e `TODO.md` demonstra a preocupação com a documentação e o planeamento do desenvolvimento, facilitando a manutenção e a futura evolução do projeto.
 
