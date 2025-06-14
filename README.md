@@ -56,7 +56,7 @@ Na pasta documentação contêm 3 ficheiros importantes:
   - Possui todas as bibliotecas necessárias para executar o nosso programa
 
 ### Documentação.md
-  - Passo a passo com instalar as bibliotecas necessárias e executar os respetivos scripts
+  - Passo a passo como instalar as bibliotecas necessárias e executar os respetivos scripts
 
 ### Relatório.md
   - Informação mais detalhada acerca do nosso projeto
