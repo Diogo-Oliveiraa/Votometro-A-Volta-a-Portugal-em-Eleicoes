@@ -12,10 +12,55 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
+# === Configuração inicial do Streamlit ===
+st.set_page_config(page_title="Resultados das Eleicoes", layout="wide")
+st.title("Resultados das Eleicoes por Distrito e Concelho")
+
 # === Constantes de caminho ===
 RESULTADOS_EXCEL = "./ResultadosFinais/VotosValidados.xlsx"  # Caminho para o ficheiro principal de resultados
 RESULTADOS_DIR = "./ResultadoEleicoesDistritos/XLSX"          # Diretório com ficheiros por concelho
 PARTIDOS_PATH = "./Docs/Partidos.xlsx"                        # Caminho para a lista de partidos e candidatos
+
+# === Verificação imediata dos ficheiros necessários ===
+"""Verifica se existem os ficheiros e apresenta o erro no terminal e na web"""
+erros = []
+
+if not os.path.exists(RESULTADOS_EXCEL):
+    msg = f"- Ficheiro principal de resultados não encontrado: `{RESULTADOS_EXCEL}`"
+    erros.append(msg)
+    print(msg)
+else:
+    msg = f"Carregado com sucesso: `{RESULTADOS_EXCEL}`"
+    print(msg)
+
+if not os.path.exists(PARTIDOS_PATH):
+    msg = f"- Lista de partidos não encontrada: `{PARTIDOS_PATH}`"
+    erros.append(msg)
+    print(msg)
+else:
+    msg = f"Carregado com sucesso: `{PARTIDOS_PATH}`"
+    print(msg)
+
+if not os.path.isdir(RESULTADOS_DIR) or not any(f.endswith(".xlsx") for f in os.listdir(RESULTADOS_DIR)):
+    msg = f"- Resultados por concelho vazios ou inexistente: `{RESULTADOS_DIR}`"
+    erros.append(msg)
+    print(msg)
+else:
+    msg = f"Carregado com sucesso: `{RESULTADOS_DIR}`"
+    print(msg)
+
+# Se houver erros, interrompe
+if erros:
+    st.error("Não foi possível carregar os dados necessários para a aplicação:")
+    for e in erros:
+        st.error(e)
+    st.stop()
+else:
+    print("Todos os dados foram carregados com sucesso!")
+
+# === Carregar dados dos partidos (apenas se tudo estiver OK) ===
+df_partidos = pd.read_excel(PARTIDOS_PATH)
+
 
 # === Função para normalizar nomes (acentos, espaços, minúsculas) ===
 def normalizar_nome(nome: str) -> str:
@@ -90,10 +135,6 @@ def mostra_resultados(df_resultados: pd.DataFrame, titulo: str) -> pd.DataFrame:
     st.plotly_chart(fig, use_container_width=True)  # Mostrar gráfico
     return df_grafico  # Retornar dataframe com dados para possível análise extra
 
-# === Configuração inicial do Streamlit ===
-st.set_page_config(page_title="Resultados das Eleicoes", layout="wide")
-st.title("Resultados das Eleicoes por Distrito e Concelho")
-
 # === Carregar dados dos partidos ===
 df_partidos = pd.read_excel(PARTIDOS_PATH)
 
@@ -121,7 +162,7 @@ if not st.session_state.simulacao:
 df_resultados_geral = pd.read_excel(RESULTADOS_EXCEL)
 
 # Filtra apenas os distritos nacionais (exclui Fora de Portugal e "Portugal")
-distritos_nacionais = [d for d in df_resultados_geral["Distrito"].unique() if not eh_fora_de_portugal(d) and normalizar_nome(d) != "portugal"]
+distritos_nacionais = [d for d in df_resultados_geral["Distrito"].unique() if not eh_fora_de_portugal(d) and normalizar_nome(d) != "Portugal"]
 df_nacional = df_resultados_geral[df_resultados_geral["Distrito"].isin(distritos_nacionais)]
 
 # Adiciona linha com total nacional (Portugal)
