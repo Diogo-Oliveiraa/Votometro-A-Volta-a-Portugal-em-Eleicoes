@@ -1,0 +1,7 @@
+﻿Name                         Stmts   Miss  Cover
+------------------------------------------------
+apresentacao_resultados.py     133     56    58%
+simular_votos.py                82      9    89%
+validacao_votos.py              81     18    78%
+------------------------------------------------
+TOTAL                          296     83    72%
