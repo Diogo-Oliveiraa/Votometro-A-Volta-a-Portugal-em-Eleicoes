@@ -17,37 +17,32 @@ st.set_page_config(page_title="Resultados das Eleicoes", layout="wide")
 st.title("Resultados das Eleicoes por Distrito e Concelho")
 
 # === Constantes de caminho ===
-RESULTADOS_EXCEL = "./ResultadosFinais/VotosValidados.xlsx"  # Caminho para o ficheiro principal de resultados
-RESULTADOS_DIR = "./ResultadoEleicoesDistritos/XLSX"          # Diretório com ficheiros por concelho
-PARTIDOS_PATH = "./Docs/Partidos.xlsx"                        # Caminho para a lista de partidos e candidatos
+# Caminho para o ficheiro principal de resultados
+RESULTADOS_EXCEL = "./ResultadosFinais/VotosValidados.xlsx"
+# Diretório com ficheiros por concelho
+RESULTADOS_DIR = "./ResultadoEleicoesDistritos/XLSX"
+# Caminho para a lista de partidos e candidatos
+PARTIDOS_PATH = "./Docs/Partidos.xlsx"
 
 # === Verificação imediata dos ficheiros necessários ===
 #Verifica se existem os ficheiros e apresenta o erro no terminal e na web
 erros = []
 
 if not os.path.exists(RESULTADOS_EXCEL):
-    msg = f"- Ficheiro principal de resultados não encontrado: `{RESULTADOS_EXCEL}`"
-    erros.append(msg)
-    print(msg)
+    erros.append(f"Ficheiro principal de resultados não encontrado: {RESULTADOS_EXCEL}")
 else:
-    msg = f"Carregado com sucesso: `{RESULTADOS_EXCEL}`"
-    print(msg)
+    print(f"Carregado com sucesso: {RESULTADOS_EXCEL}")
 
 if not os.path.exists(PARTIDOS_PATH):
-    msg = f"- Lista de partidos não encontrada: `{PARTIDOS_PATH}`"
-    erros.append(msg)
-    print(msg)
+    erros.append(f"Lista de partidos não encontrada: {PARTIDOS_PATH}")
 else:
-    msg = f"Carregado com sucesso: `{PARTIDOS_PATH}`"
-    print(msg)
+    print(f"Carregado com sucesso: {PARTIDOS_PATH}")
 
-if not os.path.isdir(RESULTADOS_DIR) or not any(f.endswith(".xlsx") for f in os.listdir(RESULTADOS_DIR)):
-    msg = f"- Resultados por concelho vazios ou inexistente: `{RESULTADOS_DIR}`"
-    erros.append(msg)
-    print(msg)
+if not os.path.isdir(RESULTADOS_DIR) or not any(f.endswith(".xlsx")
+    for f in os.listdir(RESULTADOS_DIR)):
+    erros.append(f"Resultados por concelho vazios ou inexistente: {RESULTADOS_DIR}")
 else:
-    msg = f"Carregado com sucesso: `{RESULTADOS_DIR}`"
-    print(msg)
+    print(f"Carregado com sucesso: {RESULTADOS_DIR}")
 
 # Se houver erros, interrompe
 if erros:
@@ -68,7 +63,8 @@ def normalizar_nome(nome: str) -> str:
     Normaliza um nome, removendo acentuacao, convertendo para minusculas
     e removendo espacos em excesso nas extremidades.
     """
-    return unicodedata.normalize('NFKD', str(nome)).encode('ASCII', 'ignore').decode('ASCII').lower().strip()
+    return unicodedata.normalize('NFKD', str(nome)).encode('ASCII',
+                                                'ignore').decode('ASCII').lower().strip()
 
 # === Função para identificar se é "Fora de Portugal" ===
 def eh_fora_de_portugal(nome: str) -> bool:
@@ -162,7 +158,8 @@ if not st.session_state.simulacao:
 df_resultados_geral = pd.read_excel(RESULTADOS_EXCEL)
 
 # Filtra apenas os distritos nacionais (exclui Fora de Portugal e "Portugal")
-distritos_nacionais = [d for d in df_resultados_geral["Distrito"].unique() if not eh_fora_de_portugal(d) and normalizar_nome(d) != "Portugal"]
+distritos_nacionais = [d for d in df_resultados_geral["Distrito"].unique()
+                       if not eh_fora_de_portugal(d) and normalizar_nome(d) != "Portugal"]
 df_nacional = df_resultados_geral[df_resultados_geral["Distrito"].isin(distritos_nacionais)]
 
 # Adiciona linha com total nacional (Portugal)
@@ -170,7 +167,8 @@ if not df_nacional.empty:
     soma_total = df_nacional.select_dtypes(include='number').sum()
     linha_portugal = {"Distrito": "Portugal", "Concelho": "Portugal"}
     linha_portugal.update(soma_total.to_dict())
-    df_resultados_geral = pd.concat([df_resultados_geral, pd.DataFrame([linha_portugal])], ignore_index=True)
+    df_resultados_geral = pd.concat([df_resultados_geral,
+                                     pd.DataFrame([linha_portugal])], ignore_index=True)
 
 # === Interface de seleção ===
 st.subheader("Selecao por Distrito e Concelho")
@@ -186,16 +184,19 @@ elif eh_fora_de_portugal(distrito_sel):
     # Para Fora de Portugal, procura EUROPA e FORA EUROPA
     linhas_fora = df_resultados_geral[df_resultados_geral["Distrito"].apply(eh_fora_de_portugal)]
     concelhos_fora = [str(c).strip() for c in linhas_fora["Concelho"].dropna().unique()]
-    concelhos = [c for nome in ["EUROPA", "FORA EUROPA"] for c in concelhos_fora if normalizar_nome(c) == normalizar_nome(nome)]
+    concelhos = [c for nome in ["EUROPA", "FORA EUROPA"]
+                 for c in concelhos_fora if normalizar_nome(c) == normalizar_nome(nome)]
     concelhos.insert(0, "Total")
     if len(concelhos) == 1:
         st.warning("Nao foram encontrados os concelhos 'EUROPA' e 'FORA EUROPA'.")
 else:
     # Para distritos normais, lista os concelhos válidos
-    concelhos_validos = df_resultados_geral[df_resultados_geral["Distrito"] == distrito_sel]["Concelho"].unique()
+    concelhos_validos = df_resultados_geral[df_resultados_geral["Distrito"]
+                                            == distrito_sel]["Concelho"].unique()
     concelhos = sorted([
         c.strip() for c in concelhos_validos
-        if normalizar_nome(c) not in ["portugal", "fora de portugal", "fora portugal", "europa", "fora europa"]
+        if normalizar_nome(c) not in ["portugal", "fora de portugal",
+                                      "fora portugal", "europa", "fora europa"]
     ], key=normalizar_nome)
     concelhos.insert(0, "TOTAL DISTRITO")
 
@@ -212,24 +213,30 @@ if normalizar_nome(distrito_sel) == "portugal" and normalizar_nome(concelho_sel)
     df_grafico = mostra_resultados(df_resultados, "Resultados Nacionais (Portugal)")
     vencedor = df_grafico.iloc[0]
     linha_candidato = df_partidos[df_partidos["Partidos"] == vencedor['Partido']]
-    candidatos_vencedor = linha_candidato.iloc[0]["Candidatos"] if not linha_candidato.empty else "Desconhecido"
-    st.success(f"**Vencedor Nacional:** {vencedor['Partido']} com {vencedor['Votos']} votos ({vencedor['Percentagem']}%)")
-    st.info(f"**Novo Primeiro Ministro de Portugal:** {candidatos_vencedor} ({vencedor['Partido']})")
+    candidatos_vencedor = linha_candidato.iloc[0]["Candidatos"] \
+        if not linha_candidato.empty else "Desconhecido"
+    st.success(f"**Vencedor Nacional:** "
+               f"{vencedor['Partido']} com {vencedor['Votos']} votos ({vencedor['Percentagem']}%)")
+    st.info(f"**Novo Primeiro Ministro de Portugal:** "
+            f"{candidatos_vencedor} ({vencedor['Partido']})")
 
 elif eh_fora_de_portugal(distrito_sel):
     # Caso de votação fora de Portugal
     if concelho_sel == "Total":
         df_total = df_resultados_geral[
             df_resultados_geral["Distrito"].apply(eh_fora_de_portugal) &
-            df_resultados_geral["Concelho"].apply(lambda x: normalizar_nome(x) in ["europa", "fora europa"])
+            df_resultados_geral["Concelho"].apply(lambda x: normalizar_nome(x)
+                                                            in ["europa", "fora europa"])
         ]
         if not df_total.empty:
             campos_numericos = df_total.select_dtypes(include='number').columns
             total_row = df_total[campos_numericos].sum()
             total_row["Distrito"] = "Fora de Portugal"
             total_row["Concelho"] = "Total"
-            outras_colunas = [col for col in df_total.columns if col not in campos_numericos and col not in ["Distrito", "Concelho"]]
-            total_row = total_row.reindex(["Distrito", "Concelho"] + list(campos_numericos) + outras_colunas)
+            outras_colunas = [col for col in df_total.columns
+                if col not in campos_numericos and col not in ["Distrito", "Concelho"]]
+            total_row = total_row.reindex(["Distrito", "Concelho"]
+                                          + list(campos_numericos) + outras_colunas)
             df_resultados = pd.DataFrame([total_row])
             mostra_resultados(df_resultados, "Total Fora de Portugal (EUROPA + FORA EUROPA)")
         else:
