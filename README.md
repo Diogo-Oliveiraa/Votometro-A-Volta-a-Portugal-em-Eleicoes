@@ -65,4 +65,4 @@ Na pasta documentação contêm 3 ficheiros importantes:
 
 ## Licença
 
-Verificar Licence para mais informações
+Verificar [licença](License) para mais informações.
