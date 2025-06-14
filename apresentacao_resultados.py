@@ -22,7 +22,7 @@ RESULTADOS_DIR = "./ResultadoEleicoesDistritos/XLSX"          # Diretório com f
 PARTIDOS_PATH = "./Docs/Partidos.xlsx"                        # Caminho para a lista de partidos e candidatos
 
 # === Verificação imediata dos ficheiros necessários ===
-"""Verifica se existem os ficheiros e apresenta o erro no terminal e na web"""
+#Verifica se existem os ficheiros e apresenta o erro no terminal e na web
 erros = []
 
 if not os.path.exists(RESULTADOS_EXCEL):
@@ -242,17 +242,30 @@ elif eh_fora_de_portugal(distrito_sel):
         mostra_resultados(df_resultados, f"Resultados para {concelho_sel} (Fora de Portugal)")
 
 elif concelho_sel == "TOTAL DISTRITO":
-    # Linha de total do distrito
-    df_totais = df_resultados_geral[
-        (df_resultados_geral["Distrito"] == distrito_sel) &
-        (df_resultados_geral["Concelho"] == distrito_sel)
+    df_distrito = df_resultados_geral[df_resultados_geral["Distrito"] == distrito_sel]
+
+    mapa_total_concelho = {
+        "R.A.Açores": "R.A.Açores",
+        "R.A.MADEIRA": "R.A.MADEIRA",
+        # Adiciona outros se necessário
+    }
+
+    nome_concelho_total = mapa_total_concelho.get(distrito_sel, distrito_sel)
+
+    df_totais = df_distrito[
+        df_distrito["Concelho"].apply(normalizar_nome) == normalizar_nome(nome_concelho_total)
     ]
+
     if not df_totais.empty:
-        idx_max = df_totais["Inscritos"].idxmax()
-        df_resultados = df_totais.loc[[idx_max]]
-        mostra_resultados(df_resultados, f"Total do Distrito de {distrito_sel}")
+        df_resultados = df_totais
     else:
-        st.warning("Nao existe linha de total do distrito no ficheiro.")
+        campos_numericos = df_distrito.select_dtypes(include='number').columns
+        soma_total = df_distrito[campos_numericos].sum()
+        linha_total = {"Distrito": distrito_sel, "Concelho": distrito_sel}
+        linha_total.update(soma_total.to_dict())
+        df_resultados = pd.DataFrame([linha_total])
+
+    mostra_resultados(df_resultados, f"Total do Distrito de {distrito_sel}")
 else:
     # Caso de concelho específico dentro de distrito
     filename = f"{distrito_sel}_{concelho_sel}.xlsx"
