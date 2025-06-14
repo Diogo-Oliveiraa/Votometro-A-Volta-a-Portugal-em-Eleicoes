@@ -68,12 +68,14 @@ def resultado_votos(distritos_concelhos, partidos):
     """ Função para guardar os votos por concelho em ficheiro JSON e Excel """
     criar_pastas()
 
-    pesos = gerar_pesos(partidos)  #Gerar os pesos uma única vez
+    
 
     for _, row in distritos_concelhos.iterrows():
         distrito = row["Distrito"]
         concelho = row["Concelho"]
         populacao = row["Inscritos"]
+
+        pesos = gerar_pesos(partidos)  # <--- Gerar os pesos uma única vez por Concelho
 
         votos = simular_votos(populacao, pesos)  # <--- Usar os pesos fixos
 
