@@ -18,7 +18,6 @@ def ler_docs():
         for erro in erros:
             print(erro)
         return False
-
     return caminho_concelhos, caminho_resultados
 
 def criar_pasta():
@@ -56,7 +55,8 @@ def validar_ficheiros(distritos_concelhos, caminho_resultados):
                 erros.append(f"Ficheiro em falta para: {nome_base}.xlsx")
                 distrito_ok = False
             elif len(ficheiros_encontrados) > 1:
-                erros.append(f"Vários ficheiros encontrados para: {nome_base} -> {ficheiros_encontrados}")
+                erros.append(f"Vários ficheiros encontrados para: "
+                             f"{nome_base} -> {ficheiros_encontrados}")
                 distrito_ok = False
             else:
                 caminho_ficheiro = os.path.join(caminho_resultados, ficheiros_encontrados[0])
@@ -98,9 +98,10 @@ def main():
     leitura_docs = ler_docs()
 
     if leitura_docs:
-            caminho_concelhos, caminho_resultados = ler_docs()
-            distritos_concelhos = pd.read_excel(caminho_concelhos)
-            resultados_validados, documentos_erros = validar_ficheiros(distritos_concelhos, caminho_resultados)
+        caminho_concelhos, caminho_resultados = ler_docs()
+        distritos_concelhos = pd.read_excel(caminho_concelhos)
+        resultados_validados, documentos_erros = (
+            validar_ficheiros(distritos_concelhos, caminho_resultados))
 
             if documentos_erros:
                 print("\033[31mErros encontrados durante a validação:\033[0m")
