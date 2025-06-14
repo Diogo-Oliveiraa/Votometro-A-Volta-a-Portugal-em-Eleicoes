@@ -35,31 +35,46 @@ def ficheiros_por_nome_base(ficheiros, nome_base):
     return [f for f in ficheiros if f.startswith(nome_base) and f.endswith(".xlsx")]
 
 def validar_ficheiros(distritos_concelhos, caminho_resultados):
+    """Confirma que existe apenas um ficheiro por Distrito/Concelho"""
     ficheiros = os.listdir(caminho_resultados)
     resultados_validados = []
     erros = []
 
-    for _, row in distritos_concelhos.iterrows():
-        distrito = str(row["Distrito"]).strip()
-        concelho = str(row["Concelho"]).strip()
-        nome_base = f"{distrito}_{concelho}"
+    distritos = distritos_concelhos["Distrito"].unique() # Extrai apenas os Distritos do dataframe
 
-        ficheiros_encontrados = ficheiros_por_nome_base(ficheiros, nome_base)
+    for distrito in distritos:
+        concelhos_distrito = distritos_concelhos[distritos_concelhos["Distrito"] == distrito]
+        distrito_ok = True  # Assume que tudo corre bem neste distrito
 
-        if len(ficheiros_encontrados) == 0:
-            erros.append(f"❌ Ficheiro em falta para: {nome_base}.xlsx")
-        elif len(ficheiros_encontrados) > 1:
-            erros.append(f"❌ Vários ficheiros encontrados para: {nome_base} -> {ficheiros_encontrados}")
-        else:
-            caminho_ficheiro = os.path.join(caminho_resultados, ficheiros_encontrados[0])
-            df = pd.read_excel(caminho_ficheiro)
-            calcular_abstencao(df)
-            resultados_validados.append(df)
+        for _, row in concelhos_distrito.iterrows():
+            concelho = str(row["Concelho"]).strip()
+            nome_base = f"{distrito}_{concelho}"
+
+            ficheiros_encontrados = ficheiros_por_nome_base(ficheiros, nome_base)
+
+            if len(ficheiros_encontrados) == 0:
+                erros.append(f"Ficheiro em falta para: {nome_base}.xlsx")
+                distrito_ok = False
+            elif len(ficheiros_encontrados) > 1:
+                erros.append(f"Vários ficheiros encontrados para: {nome_base} -> {ficheiros_encontrados}")
+                distrito_ok = False
+            else:
+                caminho_ficheiro = os.path.join(caminho_resultados, ficheiros_encontrados[0])
+                try:
+                    df = pd.read_excel(caminho_ficheiro)
+                    calcular_abstencao(df)
+                    resultados_validados.append(df)
+                except Exception as e:
+                    erros.append(f"Erro ao processar {nome_base}: {e}")
+                    distrito_ok = False
+
+        if distrito_ok:
+            print(f"Validação concluída {distrito}")
 
     return resultados_validados, erros
 
 def guardar_resultado_final(resultados_validados):
-    """Guarda num único ficheiro Excel """
+    """Guarda num único ficheiro Excel"""
     criar_pasta()
     caminho_saida = "./ResultadosFinais/VotosValidados.xlsx"
     df_final = pd.concat(resultados_validados, ignore_index=True)
@@ -97,4 +112,5 @@ def main():
                 guardar_resultado_final(resultados_validados)
 
 if __name__ == "__main__":
+    print("A iniciar Validação...")
     main()
