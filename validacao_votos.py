@@ -103,13 +103,13 @@ def main():
         resultados_validados, documentos_erros = (
             validar_ficheiros(distritos_concelhos, caminho_resultados))
 
-            if documentos_erros:
-                print("\033[31mErros encontrados durante a validação:\033[0m")
-                for erro in documentos_erros:
-                    print(erro)
-            else:
-                print("\033[32mTodos os ficheiros foram validados com sucesso.\033[0m")
-                guardar_resultado_final(resultados_validados)
+        if documentos_erros:
+            print("\033[31mErros encontrados durante a validação:\033[0m")
+            for erro in documentos_erros:
+                print(erro)
+        else:
+            print("\033[32mTodos os ficheiros foram validados com sucesso.\033[0m")
+            guardar_resultado_final(resultados_validados)
 
 if __name__ == "__main__":
     print("A iniciar Validação...")
