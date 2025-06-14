@@ -49,8 +49,7 @@ def verificar_dados_existentes(caminho_excel, total_esperado=310):
             if mensagem == 's':
                 for ficheiro in ficheiros:
                     os.remove(os.path.join(caminho_excel, ficheiro))
-                print("Ficheiros eliminados")
-                return True
+                    print("Ficheiros eliminados")
             else:
                 return False
     return True
@@ -69,7 +68,7 @@ def resultado_votos(distritos_concelhos, partidos):
     """ Função para guardar os votos por concelho em ficheiro JSON e Excel """
     criar_pastas()
 
-    pesos = gerar_pesos(partidos)  # <--- Gerar os pesos uma única vez
+    pesos = gerar_pesos(partidos)  #Gerar os pesos uma única vez
 
     for _, row in distritos_concelhos.iterrows():
         distrito = row["Distrito"]
