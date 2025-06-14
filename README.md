@@ -26,7 +26,7 @@ Este projeto foi desenvolvido no âmbito da unidade curricular de **Programaçã
   - Votos brancos
   - Votos nulos
 
-### Servidor da CNE (Simulado)
+### Verificação dos Votos
 
 - Aceite os resultados gerados da votação.
 - Validação e arquivo dos dados.
@@ -36,7 +36,7 @@ Este projeto foi desenvolvido no âmbito da unidade curricular de **Programaçã
   - `.xls`
   - Apresente os dados em Gráficos
 
-### Servidor Público da CNE
+### Apresentação dos Resultados
 
 - Permite consultas por:
   - Partido político
@@ -45,3 +45,24 @@ Este projeto foi desenvolvido no âmbito da unidade curricular de **Programaçã
   - Total nacional
   - Distritos
   - Concelhos
+
+---
+
+## DOCUMENTAÇÃO
+
+Na pasta documentação contêm 3 ficheiros importantes:
+
+### Bibliotecas.txt
+  - Possui todas as bibliotecas necessárias para executar o nosso programa
+
+### Documentação.md
+  - Passo a passo com instalar as bibliotecas necessárias e executar os respetivos scripts
+
+### Relatório.md
+  - Informação mais detalhada acerca do nosso projeto
+
+---
+
+## Licença
+
+Verificar Licence para mais informações
