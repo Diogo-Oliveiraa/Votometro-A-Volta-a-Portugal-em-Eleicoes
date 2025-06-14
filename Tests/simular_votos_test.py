@@ -2,6 +2,11 @@
 import shutil
 import unittest
 import os
+import sys
+
+# Adiciona a raiz do projeto ao path
+sys.path.append(os.path.abspath(".."))
+
 from simular_votos import criar_pastas
 
 class TestCriarPastas(unittest.TestCase):

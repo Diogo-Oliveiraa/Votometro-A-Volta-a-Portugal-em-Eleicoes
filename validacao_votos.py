@@ -65,11 +65,11 @@ def validar_ficheiros(distritos_concelhos, caminho_resultados):
                     calcular_abstencao(df)
                     resultados_validados.append(df)
                 except Exception as e:
-                    erros.append(f"Erro ao processar {nome_base}: {e}")
+                    erros.append(f"\033[31mErro ao processar {nome_base}: {e}\033[0m")
                     distrito_ok = False
 
         if distrito_ok:
-            print(f"Validação concluída {distrito}")
+            print(f"\033[32mValidação concluída {distrito}\033[0m")
 
     return resultados_validados, erros
 
@@ -80,7 +80,6 @@ def guardar_resultado_final(resultados_validados):
     df_final = pd.concat(resultados_validados, ignore_index=True)
     df_final.to_excel(caminho_saida, index=False)
     print(f"Ficheiro final guardado em: {caminho_saida}")
-
 
 def calcular_abstencao(df):
     """Calcula abstenção por concelho/distrito"""
@@ -104,11 +103,11 @@ def main():
             resultados_validados, documentos_erros = validar_ficheiros(distritos_concelhos, caminho_resultados)
 
             if documentos_erros:
-                print("Erros encontrados durante a validação:")
+                print("\033[31mErros encontrados durante a validação:\033[0m")
                 for erro in documentos_erros:
                     print(erro)
             else:
-                print("Todos os ficheiros foram validados com sucesso.")
+                print("\033[32mTodos os ficheiros foram validados com sucesso.\033[0m")
                 guardar_resultado_final(resultados_validados)
 
 if __name__ == "__main__":

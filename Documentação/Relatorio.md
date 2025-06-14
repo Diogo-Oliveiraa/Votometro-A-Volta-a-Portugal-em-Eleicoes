@@ -1,13 +1,13 @@
 # Relatório Votometro A Volta a Portugal em Eleicoes
 
-## Introdução
+### Introdução
 
 O presente projeto foi desenvolvido no âmbito da unidade curricular de programação IV da Licenciatura em Engenharia Informática do Instituto de Tecnologias Avançadas de Lisboa, pelos alunos **Eduardo Maio, Rodrigo Courela e Diogo Oliveira**. O objetivo principal consiste na simulação de eleições legislativas em Portugal, abrangendo a votação aleatória por concelho e distrito, o cálculo de totais nacionais e distritais, e a apresentação dos resultados através de uma aplicação web interativa.
 Com este trabalho pretendeu-se não só consolidar os conhecimentos adquiridos em Python, mas também aplicar técnicas de manipulação de dados, criação de ficheiros e visualização gráfica, recorrendo a bibliotecas e boas práticas de desenvolvimento e promovendo o trabalho em equipa.
 
 ---
 
-## Estrutura e Funcionamento do Projeto
+### Estrutura e Funcionamento do Projeto
 
 O projeto está dividido em 3 módulos, cada um com responsabilidades bem definidas:
 
@@ -32,7 +32,7 @@ O projeto está dividido em 3 módulos, cada um com responsabilidades bem defini
 
 ---
 
-## Tecnologias e Bibliotecas Utilizadas
+### Tecnologias e Bibliotecas Utilizadas
 
 - **Python 3**
 - **Pandas:** Para manipulação e análise de dados.
@@ -42,7 +42,7 @@ O projeto está dividido em 3 módulos, cada um com responsabilidades bem defini
 
 ---
 
-## Pontos de Destaque
+### Pontos de Destaque
 
 - **Simulação aleatória realista :** O sistema simula cenários eleitorais plausíveis, permitindo explorar diferentes distribuições de votos.
 - **Flexibilidade:** Permite re-simular, validar e analisar resultados a vários níveis.
@@ -51,7 +51,7 @@ O projeto está dividido em 3 módulos, cada um com responsabilidades bem defini
 
 ---
 
-## Estrutura do Projeto
+### Estrutura do Projeto
 
 A estrutura do projeto é a seguinte:
 
@@ -60,7 +60,7 @@ A estrutura do projeto é a seguinte:
 - **simular_votos.py:** Código responsável pela geração dos votos aleatórios e distribuição pelos partidos.
 - **validacao_votos.py:** Código dedicado à validação e revalidação dos votos simulados.
 - **apresentacao_resultados.py:** Código dedicado à visualização interativa dos resultados.
-- **apresentacao_resultados_test.py, simular_votos_test.py:** Scripts de teste para garantir o correto funcionamento dos módulos principais.
+- **apresentacao_resultados_test.py, simular_votos_test.py, validacao_votos_test.py:** Scripts de teste para garantir o correto funcionamento dos módulos principais.
 - **Docs/**: Pasta com ficheiros de configuração (partidos, distritos, concelhos).
 - **ResultadoEleicoesDistritos/**: Pasta onde são guardados os resultados por concelho e distrito (Excel, JSON).
 - **ResultadosFinais/**: Pasta para os ficheiros finais agregados e prontos para visualização.
@@ -69,7 +69,7 @@ A existência dos ficheiros `README.md` e `TODO.md` demonstra a preocupação co
 
 ---
 
-## Conclusão
+### Conclusão
 
 Este projeto permitiu aos autores aplicar e aprofundar os conhecimentos de Python Adquiridos na disciplina de Programação IV, especialmente nas áreas de manipulação de dados, automação de tarefas e visualização gráfica. A simulação de eleições legislativas em Portugal revelou-se um excelente exercício prático, integrando conceitos de random, persistência de dados e desenvolvimento de interfaces gráfica.
 

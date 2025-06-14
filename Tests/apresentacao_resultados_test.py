@@ -1,8 +1,12 @@
 import unittest
 import pandas as pd
 from io import StringIO
-from apresentacao_resultados import normalizar_nome, mostra_resultados
+import sys
 
+# Adiciona a raiz do projeto ao path
+sys.path.append(os.path.abspath(".."))
+
+from apresentacao_resultados import normalizar_nome, mostra_resultados
 
 class TestNormalizarNome(unittest.TestCase):
     """Testes unitários para a função normalizar_nome."""
