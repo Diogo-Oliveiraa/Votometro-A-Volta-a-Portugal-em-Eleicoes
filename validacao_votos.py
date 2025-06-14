@@ -18,7 +18,6 @@ def ler_docs():
         for erro in erros:
             print(erro)
         return False
-
     return caminho_concelhos, caminho_resultados
 
 def criar_pasta():
@@ -56,7 +55,8 @@ def validar_ficheiros(distritos_concelhos, caminho_resultados):
                 erros.append(f"Ficheiro em falta para: {nome_base}.xlsx")
                 distrito_ok = False
             elif len(ficheiros_encontrados) > 1:
-                erros.append(f"Vários ficheiros encontrados para: {nome_base} -> {ficheiros_encontrados}")
+                erros.append(f"Vários ficheiros encontrados para: "
+                             f"{nome_base} -> {ficheiros_encontrados}")
                 distrito_ok = False
             else:
                 caminho_ficheiro = os.path.join(caminho_resultados, ficheiros_encontrados[0])
@@ -70,7 +70,6 @@ def validar_ficheiros(distritos_concelhos, caminho_resultados):
 
         if distrito_ok:
             print(f"Validação concluída {distrito}")
-
     return resultados_validados, erros
 
 def guardar_resultado_final(resultados_validados):
@@ -80,7 +79,6 @@ def guardar_resultado_final(resultados_validados):
     df_final = pd.concat(resultados_validados, ignore_index=True)
     df_final.to_excel(caminho_saida, index=False)
     print(f"Ficheiro final guardado em: {caminho_saida}")
-
 
 def calcular_abstencao(df):
     """Calcula abstenção por concelho/distrito"""
@@ -99,17 +97,18 @@ def main():
     leitura_docs = ler_docs()
 
     if leitura_docs:
-            caminho_concelhos, caminho_resultados = ler_docs()
-            distritos_concelhos = pd.read_excel(caminho_concelhos)
-            resultados_validados, documentos_erros = validar_ficheiros(distritos_concelhos, caminho_resultados)
+        caminho_concelhos, caminho_resultados = ler_docs()
+        distritos_concelhos = pd.read_excel(caminho_concelhos)
+        resultados_validados, documentos_erros = (
+            validar_ficheiros(distritos_concelhos, caminho_resultados))
 
-            if documentos_erros:
-                print("Erros encontrados durante a validação:")
-                for erro in documentos_erros:
-                    print(erro)
-            else:
-                print("Todos os ficheiros foram validados com sucesso.")
-                guardar_resultado_final(resultados_validados)
+        if documentos_erros:
+            print("Erros encontrados durante a validação:")
+            for erro in documentos_erros:
+                print(erro)
+        else:
+            print("Todos os ficheiros foram validados com sucesso.")
+            guardar_resultado_final(resultados_validados)
 
 if __name__ == "__main__":
     print("A iniciar Validação...")
