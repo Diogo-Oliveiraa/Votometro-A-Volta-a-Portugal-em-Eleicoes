@@ -1,7 +1,7 @@
 ## TODO
 
 ## 📁 Estrutura Inicial
-- [ ] Criar estrutura de diretórios:
+- [x] Criar estrutura de diretórios:
   - [x] `Docs/`
   - [x] `resultadosEleicoesDistritos/`
   - [x] `resultadosFinais/`
