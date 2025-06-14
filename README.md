@@ -34,7 +34,6 @@ Este projeto foi desenvolvido no âmbito da unidade curricular de **Programaçã
 - Gera ficheiros de resultados em:
   - `.json`
   - `.xls`
-  - Apresente os dados em Gráficos
 
 ### Apresentação dos Resultados
 
@@ -45,6 +44,7 @@ Este projeto foi desenvolvido no âmbito da unidade curricular de **Programaçã
   - Total nacional
   - Distritos
   - Concelhos
+- Apresentar os dados em Gráficos
 
 ---
 
