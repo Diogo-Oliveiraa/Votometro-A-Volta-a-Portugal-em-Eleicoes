@@ -48,7 +48,7 @@ Este projeto foi desenvolvido no âmbito da unidade curricular de **Programaçã
 
 ---
 
-## DOCUMENTAÇÃO
+## Documentação
 
 Na pasta documentação contêm 3 ficheiros importantes:
 
