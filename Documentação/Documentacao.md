@@ -32,9 +32,17 @@ Destas, as seguintes são externas e precisam de instalação manual:
 Para instalar as bibliotecas externas, executa:
 
 ```bash
-pip install pandas plotly streamlit
+pip3 install -r requirements.txt # Para Python 3
 ou
-pip3 install pandas plotly streamlit # Para Python 3
+pip install -r requirements.txt
+```
+
+Caso já tenha a biblioteca OS instalada pode correr o ficheiro Bibliotecas.py
+
+```bash
+python3 Bibliotecas.py
+ou
+python Bibliotecas.py
 ```
 
 ---
