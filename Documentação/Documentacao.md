@@ -45,6 +45,12 @@ ou
 python Bibliotecas.py
 ```
 
+Caso pretenda criar um ambiente virtual
+
+No terminal, execute a seguinte linha
+```bash
+python3 -m venv venv
+```
 ---
 
 ### Como executar
