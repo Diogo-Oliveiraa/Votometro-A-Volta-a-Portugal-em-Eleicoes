@@ -67,7 +67,6 @@ def criar_pastas():
 def resultado_votos(distritos_concelhos, partidos):
     """ Função para guardar os votos por concelho em ficheiro JSON e Excel """
     criar_pastas()
-    
     for _, row in distritos_concelhos.iterrows():
         distrito = row["Distrito"]
         concelho = row["Concelho"]

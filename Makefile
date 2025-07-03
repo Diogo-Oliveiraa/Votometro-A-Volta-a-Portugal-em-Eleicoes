@@ -17,6 +17,9 @@ venv:
 		echo "Ambiente virtual $(VENV_DIR) já existe."; \
 	fi
 
+run-script:
+	source $(VENV_DIR)/bin/activate && python3 meu_script.py
+
 # Instalar dependências com o script requirements.py
 install-deps: venv
 	@echo "Instalar dependências com $(PYTHON) Documentação/requirements.py"
@@ -26,7 +29,7 @@ install-deps: venv
 # Simular votos
 simular: install-deps
 	@echo "A simular votos..."
-	source $(VENV_DIR)/bin/activate && yes | $(PYTHON) simular_votos.py
+	source $(VENV_DIR)/bin/activate && yes s | $(PYTHON) simular_votos.py
 
 # Validar votos
 validar: install-deps
