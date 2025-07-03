@@ -1,17 +1,18 @@
 # Makefile  Votometro - execução automatizada
 
-VENV_DIR = .venv
+VENV_DIR = venv
 PYTHON = $(VENV_DIR)/bin/python
 PIP = $(VENV_DIR)/bin/pip
+COVERAGE = $(VENV_DIR)/bin/coverage
 
 .DEFAULT_GOAL := all
 
-.PHONY: venv install-deps simular validar streamlit lint all clean
+.PHONY: venv install-deps lint coverage simular validar streamlit all clean
 
 # Criar ambiente virtual se não existir
 venv:
 	@if [ ! -d "$(VENV_DIR)" ]; then \
-		echo "Criando ambiente virtual $(VENV_DIR)..."; \
+		echo "A criar ambiente virtual $(VENV_DIR)..."; \
 		python3 -m venv $(VENV_DIR); \
 	else \
 		echo "Ambiente virtual $(VENV_DIR) já existe."; \
@@ -46,8 +47,14 @@ lint: install-deps
 	@echo "Executar pylint..."
 	source $(VENV_DIR)/bin/activate && pylint apresentacao_resultados.py simular_votos.py validacao_votos.py
 
+coverage: install-deps
+	@echo Executar testes com coverage...
+	PYTHONPATH=. venv/bin/coverage run -m unittest discover -s Tests -p "*.py"; \
+	venv/bin/coverage report; \
+	venv/bin/coverage html -d tmp
+
 # Fazer tudo em sequência
-all: install-deps simular validar streamlit lint
+all: install-deps simular validar streamlit lint coverage 
 	@echo "=== Tudo concluído ==="
 
 # Limpar ambiente virtual (opcional)
