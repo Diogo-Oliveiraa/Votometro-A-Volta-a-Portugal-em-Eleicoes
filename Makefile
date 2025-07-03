@@ -47,10 +47,10 @@ lint: install-deps
 	source $(VENV_DIR)/bin/activate && pylint apresentacao_resultados.py simular_votos.py validacao_votos.py >resultado_pylint.log
 
 coverage: install-deps
-	@echo Executar testes com coverage...
-	PYTHONPATH=. venv/bin/coverage run -m unittest discover -s Tests -p "*.py"; \
-	coverage report; \
-	coverage html -d tmp
+	@echo "Executar testes com coverage..."
+	PYTHONPATH=. .venv/bin/coverage run -m unittest discover -s . -p "test_*.py"
+	.venv/bin/coverage report
+	.venv/bin/coverage html -d tmp
 
 # Fazer tudo em sequência
 all: install-deps simular validar streamlit lint coverage
