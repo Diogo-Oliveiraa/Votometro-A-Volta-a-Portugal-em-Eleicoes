@@ -52,8 +52,25 @@ No terminal, execute a seguinte linha
 python3 -m venv venv
 ```
 ---
+### Como executar de forma simples e automática 
 
-### Como executar
+Executar o script.
+
+```bash
+   make all
+   ```
+Este cria um ambiente virtual e instala todas as bibliotecas necessárias para a execução do projeto
+e executa o mesmo automaticamente.
+
+Apos terminar executar o seguinte script
+
+```bash
+   make clean
+   ```
+
+Este limpa e elemina o ambiente virtual criado bem como todos os dados gerados nessa sessão.
+
+### Como executar o projeto passo a passo 
 
 Execute os scripts pela seguinte ordem para garantir o funcionamento correto:
 
