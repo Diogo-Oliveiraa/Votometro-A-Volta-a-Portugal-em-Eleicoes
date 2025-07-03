@@ -40,9 +40,9 @@ pip install -r requirements.txt
 Caso já tenha a biblioteca OS instalada pode correr o ficheiro Bibliotecas.py
 
 ```bash
-python3 Bibliotecas.py
+python3 requirements.py
 ou
-python Bibliotecas.py
+python requirements.py
 ```
 
 Caso pretenda criar um ambiente virtual
