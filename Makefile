@@ -48,7 +48,7 @@ lint: install-deps
 
 coverage: install-deps
 	@echo Executar testes com coverage...
-	PYTHONPATH=.venv/bin/coverage run -m unittest discover "*.py"; \
+	PYTHONPATH=. venv/bin/coverage run -m unittest discover -s Tests -p "*.py"; \
 	coverage report; \
 	coverage html -d tmp
 
