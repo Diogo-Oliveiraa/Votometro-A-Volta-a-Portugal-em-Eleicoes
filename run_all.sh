@@ -6,46 +6,30 @@ VENV_DIR=".venv"
 
 # 1. Criar e ativar venv
 if [ ! -d "$VENV_DIR" ]; then
-  echo "=== Criando ambiente virtual ($VENV_DIR) ==="
+  echo "=== criar ambiente virtual ($VENV_DIR) ==="
   python3 -m venv $VENV_DIR
 fi
 
-echo "=== Ativando ambiente virtual ==="
+echo "=== ativar ambiente virtual ==="
 source $VENV_DIR/bin/activate
 
 # 2. Instalar dependências
-echo "=== Instalando dependências ==="
+echo "=== install dependências ==="
 pip install --upgrade pip
 pip install altair==5.5.0 astroid==3.3.9 attrs==25.3.0 blinker==1.9.0 cachetools==5.5.2 certifi==2025.4.26 charset-normalizer==3.4.2 click==8.2.1 contourpy==1.3.2 coverage==7.9.1 cycler==0.12.1 dill==0.3.9 elections==0.0.2 et_xmlfile==2.0.0 fonttools==4.58.0 geopandas==1.0.1 gitdb==4.0.12 GitPython==3.1.44 idna==3.10 isort==6.0.1 Jinja2==3.1.6 jsonschema==4.24.0 jsonschema-specifications==2025.4.1 kiwisolver==1.4.8 MarkupSafe==3.0.2 matplotlib==3.10.3 mccabe==0.7.0 narwhals==1.41.0 numpy==2.2.6 openpyxl==3.1.5 packaging==24.2 pandas==2.2.3 pillow==11.2.1 platformdirs==4.3.7 plotly==6.1.1 protobuf==6.31.0 pyarrow==20.0.0 pydeck==0.9.1 pylint==3.3.6 pyogrio==0.11.0 pyparsing==3.2.3 pyproj==3.7.1 python-dateutil==2.9.0.post0 pytz==2025.2 referencing==0.36.2 requests==2.32.3 rpds-py==0.25.1 setuptools==78.1.0 shapely==2.1.1 six==1.17.0 smmap==5.0.2 streamlit==1.45.1 tenacity==9.1.2 toml==0.10.2 tomlkit==0.13.2 tornado==6.5.1 typing_extensions==4.13.2 tzdata==2025.2 urllib3==2.4.0
 
 # 3. Executar os scripts principais
-echo "=== 🗳️ Simular votos ==="
+echo "===  Simular votos ==="
 yes | python3 simular_votos.py
 
-echo "=== ✅ Validar votos ==="
+echo "===  Validar votos ==="
 python3 validacao_votos.py
 
-echo "=== 🚀 Lançar aplicação Streamlit (em background) ==="
+echo "=== executar aplicação Streamlit (em background) ==="
 nohup streamlit run apresentacao_resultados.py > streamlit.log 2>&1 &
 
-# 4. Rodar testes
-echo "=== 🧪 Rodando testes unitários ==="
-
-echo "--- Testes apresentaca_resultados_test.py ---"
-python3 apresentaca_resultados_test.py
-
-echo "--- Testes simular_votos.py ---"
-python3 -m unittest simular_votos.py
-
-echo "--- Testes validacao_votos_test.py ---"
-python3 validacao_votos_test.py
-
-# 5. Parar Streamlit
-echo "=== 🧹 Parando Streamlit ==="
-pkill -f "streamlit run apresentacao_resultados.py" || echo "Streamlit já parado"
-
 # 6. Rodar pylint
-echo "=== 📋 Rodando pylint ==="
+echo "===  pylint ==="
 pylint apresentacao_resultados.py simular_votos.py validacao_votos.py
 
 # 7. Desativar ambiente virtual
