@@ -1,64 +1,54 @@
-# Makefile  Votometro - execução automatizada
+# Makefile Votometro para Windows PowerShell
 
-VENV_DIR = venv
-PYTHON = $(VENV_DIR)/bin/python
-PIP = $(VENV_DIR)/bin/pip
-COVERAGE = $(VENV_DIR)/bin/coverage
+VENV_DIR = .venv
+PYTHON = $(VENV_DIR)\Scripts\python.exe
+PIP = $(VENV_DIR)\Scripts\pip.exe
 
 .DEFAULT_GOAL := all
 
-.PHONY: venv install-deps lint coverage simular validar streamlit all clean
+.PHONY: venv install-deps simular validar streamlit lint all clean
 
 # Criar ambiente virtual se não existir
 venv:
-	@if [ ! -d "$(VENV_DIR)" ]; then \
-		echo "A criar ambiente virtual $(VENV_DIR)..."; \
-		python3 -m venv $(VENV_DIR); \
-	else \
-		echo "Ambiente virtual $(VENV_DIR) já existe."; \
-	fi
-
-run-script:
-	source $(VENV_DIR)/bin/activate && python3 meu_script.py
+	@if not exist "$(VENV_DIR)" ( \
+		echo Criando ambiente virtual $(VENV_DIR)... & \
+		python -m venv $(VENV_DIR) \
+	) else ( \
+		echo Ambiente virtual $(VENV_DIR) já existe. \
+	)
 
 # Instalar dependências com o script requirements.py
 install-deps: venv
-	@echo "Instalar dependências com $(PYTHON) Documentação/requirements.py"
-	source $(VENV_DIR)/bin/activate && $(PYTHON) Documentação/requirements.py
-	@echo "Dependências instaladas."
+	@echo Instalando dependências com $(PYTHON) Documentação\requirements.py
+	$(PYTHON) Documentação\requirements.py
+	@echo Dependências instaladas.
 
-# Simular votos
+# Simular votos (resposta automática 's')
 simular: install-deps
-	@echo "A simular votos..."
-	source $(VENV_DIR)/bin/activate && yes s | $(PYTHON) simular_votos.py
+	@echo A simular votos...
+	echo s | $(PYTHON) simular_votos.py
 
 # Validar votos
 validar: install-deps
-	@echo "A validar votos..."
-	source $(VENV_DIR)/bin/activate && $(PYTHON) validacao_votos.py
+	@echo A validar votos...
+	$(PYTHON) validacao_votos.py
 
 # Executar app Streamlit em background
 streamlit: install-deps
-	@echo "A executar Streamlit em background..."
-	source $(VENV_DIR)/bin/activate && nohup streamlit run apresentacao_resultados.py > streamlit.log 2>&1 &
+	@echo A executar Streamlit em background...
+	start /b $(PYTHON) -m streamlit run apresentacao_resultados.py > streamlit.log 2>&1
 
 # Executar pylint nos ficheiros principais
 lint: install-deps
-	@echo "Executar pylint..."
-	source $(VENV_DIR)/bin/activate && pylint apresentacao_resultados.py simular_votos.py validacao_votos.py
-
-coverage: install-deps
-	@echo Executar testes com coverage...
-	PYTHONPATH=. venv/bin/coverage run -m unittest discover -s Tests -p "*.py"; \
-	venv/bin/coverage report; \
-	venv/bin/coverage html -d tmp
+	@echo Executar pylint...
+	$(PYTHON) -m pylint apresentacao_resultados.py simular_votos.py validacao_votos.py
 
 # Fazer tudo em sequência
-all: install-deps simular validar streamlit lint coverage 
-	@echo "=== Tudo concluído ==="
+all: install-deps simular validar streamlit lint
+	@echo === Tudo concluído ===
 
 # Limpar ambiente virtual (opcional)
 clean:
-	@echo "Remove ambiente virtual $(VENV_DIR)..."
-	rm -rf $(VENV_DIR)
-	@echo "Limpeza concluída."
+	@echo Removendo ambiente virtual $(VENV_DIR)...
+	rmdir /s /q $(VENV_DIR)
+	@echo Limpeza concluída.
